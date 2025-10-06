@@ -33,8 +33,9 @@ require File.expand_path(File.join('packages', 'flutter_tools', 'bin', 'podhelpe
 flutter_ios_podfile_setup
 
 target 'Runner' do
-  use_frameworks!
-  use_modular_headers!
+  # Use static frameworks to ensure Flutter.framework is linked correctly
+  # and headers like 'Flutter/Flutter.h' are available to plugin targets.
+  use_frameworks! :linkage => :static
 
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
 end
