@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dial/dial_widget.dart';
 import 'video/video_tab.dart';
+import 'calendar/fourteen_year_tab.dart';
 import 'calendar/calendar_tab.dart';
 import 'dial/top_tab_buttons.dart';
 
@@ -22,7 +23,7 @@ class FourWatchesApp extends StatelessWidget {
         ),
         colorScheme: ThemeData.dark()
             .colorScheme
-            .copyWith(background: const Color(0xFF000000)),
+            .copyWith(surface: const Color(0xFF000000)),
       ),
       home: const HomePage(),
       debugShowCheckedModeBanner: false,
@@ -44,7 +45,7 @@ class _HomePageState extends State<HomePage>
   @override
   void initState() {
     super.initState();
-    _ctrl = TabController(length: 3, vsync: this);
+  _ctrl = TabController(length: 4, vsync: this);
   }
 
   @override
@@ -67,11 +68,14 @@ class _HomePageState extends State<HomePage>
             child: TabBarView(
               controller: _ctrl,
               children: [
-                DialWidget(
-                  onSelectTab: (i) => _ctrl.animateTo(i),
-                ), // Tab 1
-                VideoTab(onSelectTab: (i) => _ctrl.animateTo(i)), // Tab 2
-                CalendarTab(onSelectTab: (i) => _ctrl.animateTo(i)), // Tab 3
+                // Tab 0: Home / Dial
+                DialWidget(onSelectTab: (i) => _ctrl.animateTo(i)),
+                // Tab 1: About / Video
+                VideoTab(onSelectTab: (i) => _ctrl.animateTo(i)),
+                // Tab 2: Daily Calendar (CalendarTab)
+                CalendarTab(onSelectTab: (i) => _ctrl.animateTo(i)),
+                // Tab 3: 14-year calendar
+                const FourteenYearTab(),
               ],
             ),
           ),

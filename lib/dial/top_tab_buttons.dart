@@ -41,8 +41,8 @@ class TopTabButtons extends StatelessWidget {
         children: [
           // left: Daily Calendar -> Calendar tab (index 2)
           circle('Daily\nCalendar', 2),
-          // middle: 14 Year Calendar -> Home tab (index 0)
-          circle('14 Year\nCalendar', 0),
+          // middle: 14 Year Calendar -> FourteenYear tab (index 3)
+          circle('14 Year\nCalendar', 3),
           // right: About Four Watches -> About tab (index 1)
           circle('About\nFour\nWatches', 1),
         ],

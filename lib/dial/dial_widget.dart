@@ -5,7 +5,7 @@ import 'dart:math' as math;
 /// Single clean implementation of the dial widget.
 class DialWidget extends StatefulWidget {
   final ValueChanged<int>? onSelectTab;
-  const DialWidget({Key? key, this.onSelectTab}) : super(key: key);
+  const DialWidget({super.key, this.onSelectTab});
 
   @override
   State<DialWidget> createState() => _DialWidgetState();
@@ -94,7 +94,7 @@ class _DialWidgetState extends State<DialWidget>
         Positioned(
           left: 0,
           right: 0,
-          bottom: 28,
+          bottom: 28 + pxPerCm * 1.0, // move info panel up by ~1 cm
           child: _infoPanel(days, watch, house),
         ),
       ],
