@@ -24,10 +24,13 @@ class HousesTab extends StatelessWidget {
           final house = items[idx];
           final number = house.key;
           final range = house.value;
-          return ListTile(
-            tileColor: Colors.white,
-            title: Text('House $number', style: const TextStyle(fontWeight: FontWeight.bold)),
-            subtitle: Text('${_fmt(range.start)} — ${_fmt(range.end)}'),
+          return Container(
+            color: Colors.black,
+            child: ListTile(
+              tileColor: Colors.black,
+              title: Text('House $number', style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+              subtitle: Text('${_fmt(range.start)} — ${_fmt(range.end)}', style: const TextStyle(color: Colors.white70)),
+            ),
           );
         },
       ),
