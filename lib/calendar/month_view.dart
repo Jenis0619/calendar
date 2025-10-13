@@ -106,26 +106,45 @@ class MonthView extends StatelessWidget {
                       builder: (context, cellConstraints) {
                         // responsive font sizes based on available cell height
                         final h = cellConstraints.maxHeight;
-                        final dayFont = (h * 0.28).clamp(10.0, 44.0); // slightly smaller to avoid overflow
-                        final smallFont = (h * 0.055).clamp(6.0, 10.0); // smaller small text to prevent overflow
-                        return Padding(
-                          padding: const EdgeInsets.only(top: 6.0, left: 6.0, right: 6.0, bottom: 6.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              // date number centered and near top
-                              Align(
-                                alignment: Alignment.topCenter,
-                                child: Text('${dt.day}', style: TextStyle(fontSize: dayFont, fontWeight: FontWeight.bold, color: Colors.black)),
-                              ),
-                              const SizedBox(height: 8),
-                              // small cycle labels, smaller and black, single-line to avoid overflows
-                              Text('Day $dayOfCycle of 1260', style: TextStyle(fontSize: smallFont, color: Colors.black), maxLines: 1, overflow: TextOverflow.ellipsis),
-                              Text('Day $dayOfSegment of 105', style: TextStyle(fontSize: smallFont, color: Colors.black), maxLines: 1, overflow: TextOverflow.ellipsis),
-                              // no editing or note icons in 14-year month view
-                            ],
-                          ),
-                        );
+                          final dayFont = (h * 0.28).clamp(10.0, 44.0); // slightly smaller to avoid overflow
+                          // reduce small label sizing and allow it to scale down to fit width
+                          final smallFont = (h * 0.04).clamp(6.0, 9.0);
+                          return Padding(
+                            padding: const EdgeInsets.only(top: 6.0, left: 6.0, right: 6.0, bottom: 6.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                // date number centered and near top
+                                Align(
+                                  alignment: Alignment.topCenter,
+                                  child: Text('${dt.day}', style: TextStyle(fontSize: dayFont, fontWeight: FontWeight.bold, color: Colors.black)),
+                                ),
+                                // spacer pushes the small labels to the bottom of the cell
+                                const Expanded(child: SizedBox()),
+                                // bottom-aligned small cycle labels: wrap with FittedBox so they scale to available width
+                                Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    SizedBox(
+                                      width: double.infinity,
+                                      child: FittedBox(
+                                        fit: BoxFit.scaleDown,
+                                        child: Text('Day $dayOfCycle of 1260', style: TextStyle(fontSize: smallFont, color: Colors.black)),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: double.infinity,
+                                      child: FittedBox(
+                                        fit: BoxFit.scaleDown,
+                                        child: Text('Day $dayOfSegment of 105', style: TextStyle(fontSize: smallFont, color: Colors.black)),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                // no editing or note icons in 14-year month view
+                              ],
+                            ),
+                          );
                       },
                     ),
                   );
