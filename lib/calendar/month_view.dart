@@ -42,14 +42,25 @@ class _MonthViewState extends State<MonthView> {
     final tec = TextEditingController(text: _notes[key] ?? '');
     final result = await showDialog<bool>(
       context: context,
-      builder: (_) => AlertDialog(
-        title: Text('Note for ${DateFormat.yMMMMd().format(dt)}'),
-        content: TextField(controller: tec, maxLines: 6, decoration: const InputDecoration(hintText: 'Add a note...')),
-        actions: [
-          TextButton(onPressed: () => Navigator.of(context).pop(false), child: const Text('CANCEL')),
-          ElevatedButton(onPressed: () => Navigator.of(context).pop(true), child: const Text('SAVE')),
-        ],
-      ),
+      builder: (ctx) {
+        // Wrap dialog to respect keyboard insets and avoid overflow
+        return Padding(
+          padding: MediaQuery.of(ctx).viewInsets,
+          child: AlertDialog(
+            title: Text('Note for ${DateFormat.yMMMMd().format(dt)}'),
+            content: SingleChildScrollView(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(maxHeight: 320),
+                child: TextField(controller: tec, maxLines: 6, decoration: const InputDecoration(hintText: 'Add a note...')),
+              ),
+            ),
+            actions: [
+              TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: const Text('CANCEL')),
+              ElevatedButton(onPressed: () => Navigator.of(ctx).pop(true), child: const Text('SAVE')),
+            ],
+          ),
+        );
+      },
     );
     if (result == true) {
       setState(() {
@@ -171,7 +182,7 @@ class _MonthViewState extends State<MonthView> {
                           // responsive font sizes based on available cell height
                           final h = cellConstraints.maxHeight;
                           final dayFont = (h * 0.28).clamp(10.0, 44.0); // slightly smaller to avoid overflow
-                          final smallFont = (h * 0.062).clamp(6.0, 11.0); // smaller small text to prevent overflow
+                          final smallFont = (h * 0.055).clamp(6.0, 10.0); // smaller small text to prevent overflow
                           return Padding(
                             padding: const EdgeInsets.only(top: 6.0, left: 6.0, right: 6.0, bottom: 6.0),
                             child: Column(
