@@ -1,90 +1,18 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:intl/intl.dart';
 
-class MonthView extends StatefulWidget {
+class MonthView extends StatelessWidget {
   final int year;
   final int month;
   const MonthView({super.key, required this.year, required this.month});
-
-  @override
-  State<MonthView> createState() => _MonthViewState();
-}
-
-class _MonthViewState extends State<MonthView> {
-  final Map<String, String> _notes = {}; // yyyy-MM-dd -> text
-
-  @override
-  void initState() {
-    super.initState();
-    _loadNotes();
-  }
-
-  Future<void> _loadNotes() async {
-    final sp = await SharedPreferences.getInstance();
-    final raw = sp.getString('notes');
-    if (raw != null) {
-      try {
-        final decoded = jsonDecode(raw) as Map<String, dynamic>;
-        setState(() => _notes.addAll(decoded.map((k, v) => MapEntry(k, v.toString()))));
-      } catch (_) {}
-    }
-  }
-
-  Future<void> _saveNotes() async {
-    final sp = await SharedPreferences.getInstance();
-    await sp.setString('notes', jsonEncode(_notes));
-  }
-
-  Future<void> _editNoteFor(DateTime dt) async {
-    final key = DateFormat('yyyy-MM-dd').format(dt);
-    final tec = TextEditingController(text: _notes[key] ?? '');
-    final result = await showDialog<bool>(
-      context: context,
-      builder: (ctx) {
-        // Wrap dialog to respect keyboard insets and avoid overflow
-        return Padding(
-          padding: MediaQuery.of(ctx).viewInsets,
-          child: AlertDialog(
-            title: Text('Note for ${DateFormat.yMMMMd().format(dt)}'),
-            content: SingleChildScrollView(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(maxHeight: 320),
-                child: TextField(controller: tec, maxLines: 6, decoration: const InputDecoration(hintText: 'Add a note...')),
-              ),
-            ),
-            actions: [
-              TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: const Text('CANCEL')),
-              ElevatedButton(onPressed: () => Navigator.of(ctx).pop(true), child: const Text('SAVE')),
-            ],
-          ),
-        );
-      },
-    );
-    if (result == true) {
-      setState(() {
-        final text = tec.text.trim();
-        if (text.isEmpty) {
-          _notes.remove(key);
-        } else {
-          _notes[key] = text;
-        }
-      });
-      await _saveNotes();
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
     // Mockup month view inspired by the user's attachment. We'll render a simple
     // month grid with day numbers and the two small lines for "Day X of 1260" and "Day Y of 105".
 
-    final year = widget.year;
-    final month = widget.month;
     final first = DateTime(year, month, 1);
-  // Find the Sunday that begins the 6x7 grid
-  final startGrid = first.subtract(Duration(days: (first.weekday % 7)));
+    // Find the Sunday that begins the 6x7 grid
+    final startGrid = first.subtract(Duration(days: (first.weekday % 7)));
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -168,49 +96,37 @@ class _MonthViewState extends State<MonthView> {
                   final col = (idx % 7);
                   final cellBg = (col == 0 || col == 6) ? Colors.green[50] : Colors.white;
 
-                  final key = DateFormat('yyyy-MM-dd').format(dt);
-                  final hasNote = _notes.containsKey(key);
-                  return GestureDetector(
-                    onTap: () => _editNoteFor(dt),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: cellBg,
-                        border: Border.all(color: const Color(0xFFDDDDDD), width: 1),
-                      ),
-                      child: LayoutBuilder(
-                        builder: (context, cellConstraints) {
-                          // responsive font sizes based on available cell height
-                          final h = cellConstraints.maxHeight;
-                          final dayFont = (h * 0.28).clamp(10.0, 44.0); // slightly smaller to avoid overflow
-                          final smallFont = (h * 0.055).clamp(6.0, 10.0); // smaller small text to prevent overflow
-                          return Padding(
-                            padding: const EdgeInsets.only(top: 6.0, left: 6.0, right: 6.0, bottom: 6.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                // date number centered and near top
-                                Align(
-                                  alignment: Alignment.topCenter,
-                                  child: Text('${dt.day}', style: TextStyle(fontSize: dayFont, fontWeight: FontWeight.bold, color: Colors.black)),
-                                ),
-                                const SizedBox(height: 8),
-                                // small cycle labels, smaller and black, single-line to avoid overflows
-                                Text('Day $dayOfCycle of 1260', style: TextStyle(fontSize: smallFont, color: Colors.black), maxLines: 1, overflow: TextOverflow.ellipsis),
-                                Text('Day $dayOfSegment of 105', style: TextStyle(fontSize: smallFont, color: Colors.black), maxLines: 1, overflow: TextOverflow.ellipsis),
-                                // optional note icon at bottom-right if exists
-                                if (hasNote)
-                                  Align(
-                                    alignment: Alignment.bottomRight,
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(top: 6.0),
-                                      child: Icon(Icons.note, size: smallFont * 1.6, color: Colors.blueGrey),
-                                    ),
-                                  ),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
+                  // non-editable month view: show static calendar cells only
+                  return Container(
+                    decoration: BoxDecoration(
+                      color: cellBg,
+                      border: Border.all(color: const Color(0xFFDDDDDD), width: 1),
+                    ),
+                    child: LayoutBuilder(
+                      builder: (context, cellConstraints) {
+                        // responsive font sizes based on available cell height
+                        final h = cellConstraints.maxHeight;
+                        final dayFont = (h * 0.28).clamp(10.0, 44.0); // slightly smaller to avoid overflow
+                        final smallFont = (h * 0.055).clamp(6.0, 10.0); // smaller small text to prevent overflow
+                        return Padding(
+                          padding: const EdgeInsets.only(top: 6.0, left: 6.0, right: 6.0, bottom: 6.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              // date number centered and near top
+                              Align(
+                                alignment: Alignment.topCenter,
+                                child: Text('${dt.day}', style: TextStyle(fontSize: dayFont, fontWeight: FontWeight.bold, color: Colors.black)),
+                              ),
+                              const SizedBox(height: 8),
+                              // small cycle labels, smaller and black, single-line to avoid overflows
+                              Text('Day $dayOfCycle of 1260', style: TextStyle(fontSize: smallFont, color: Colors.black), maxLines: 1, overflow: TextOverflow.ellipsis),
+                              Text('Day $dayOfSegment of 105', style: TextStyle(fontSize: smallFont, color: Colors.black), maxLines: 1, overflow: TextOverflow.ellipsis),
+                              // no editing or note icons in 14-year month view
+                            ],
+                          ),
+                        );
+                      },
                     ),
                   );
                 },
