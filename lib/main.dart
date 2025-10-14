@@ -5,6 +5,8 @@ import 'calendar/fourteen_year_tab.dart';
 import 'calendar/calendar_tab.dart';
 import 'tabs/houses_tab.dart';
 import 'tabs/special_day_tab.dart';
+import 'tabs/jump_house_tab.dart';
+import 'tabs/jump_day_tab.dart';
 import 'dial/top_tab_buttons.dart';
 
 void main() => runApp(const FourWatchesApp());
@@ -47,8 +49,8 @@ class _HomePageState extends State<HomePage>
   @override
   void initState() {
     super.initState();
-  // length 6: 0=Home,1=About,2=DailyCalendar,3=14Year,4=Houses,5=SpecialDay
-  _ctrl = TabController(length: 6, vsync: this);
+  // length 8: 0=Home,1=About,2=DailyCalendar,3=14Year,4=Houses,5=SpecialDay,6=JumpHouse,7=JumpDay
+  _ctrl = TabController(length: 8, vsync: this);
   }
 
   @override
@@ -83,6 +85,10 @@ class _HomePageState extends State<HomePage>
                 const HousesTab(),
                 // Tab 5: Special Day 666 page
                 const SpecialDayTab(),
+                // Tab 6: Jump to House (1..48)
+                const JumpHouseTab(),
+                // Tab 7: Jump to Day (1..5040)
+                const JumpDayTab(),
               ],
             ),
           ),
