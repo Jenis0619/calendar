@@ -3,7 +3,11 @@ import 'package:flutter/material.dart';
 class MonthView extends StatelessWidget {
   final int year;
   final int month;
-  const MonthView({super.key, required this.year, required this.month});
+  final int? highlightDay;
+  final DateTime? rangeStart;
+  final DateTime? rangeEnd;
+
+  const MonthView({super.key, required this.year, required this.month, this.highlightDay, this.rangeStart, this.rangeEnd});
 
   @override
   Widget build(BuildContext context) {
@@ -94,7 +98,18 @@ class MonthView extends StatelessWidget {
 
                   // highlight Sunday and Saturday columns with pale green background
                   final col = (idx % 7);
-                  final cellBg = (col == 0 || col == 6) ? Colors.green[50] : Colors.white;
+                  // determine if this cell is within a highlighted range or is the highlight day
+                  bool isInRange = false;
+                  if (rangeStart != null && rangeEnd != null) {
+                    final rs = rangeStart!;
+                    final re = rangeEnd!;
+                    isInRange = !cellDate.isBefore(rs) && !cellDate.isAfter(re);
+                  }
+                  final isHighlightDay = (highlightDay != null && inMonth && cellDate.day == highlightDay);
+
+                  final cellBg = isInRange
+                      ? Colors.yellow[100]
+                      : ((col == 0 || col == 6) ? Colors.green[50] : Colors.white);
 
                   // non-editable month view: show static calendar cells only
                   return Container(
@@ -114,11 +129,18 @@ class MonthView extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                // date number centered and near top
-                                Align(
-                                  alignment: Alignment.topCenter,
-                                  child: Text('${dt.day}', style: TextStyle(fontSize: dayFont, fontWeight: FontWeight.bold, color: Colors.black)),
-                                ),
+                                  // date number centered and near top
+                                  Align(
+                                    alignment: Alignment.topCenter,
+                                    child: Text(
+                                      '${dt.day}',
+                                      style: TextStyle(
+                                        fontSize: dayFont,
+                                        fontWeight: FontWeight.bold,
+                                        color: isHighlightDay ? Colors.red : Colors.black,
+                                      ),
+                                    ),
+                                  ),
                                 // spacer pushes the small labels to the bottom of the cell
                                 const Expanded(child: SizedBox()),
                                 // bottom-aligned small cycle labels: wrap with FittedBox so they scale to available width

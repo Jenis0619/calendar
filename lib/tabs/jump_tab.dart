@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../calendar/month_view.dart';
 
 class JumpTab extends StatefulWidget {
   const JumpTab({super.key});
@@ -26,6 +27,18 @@ class _JumpTabState extends State<JumpTab> {
       _houseResult = n;
       _dayResult = null;
     });
+    // navigate to MonthView showing the start month for this house and highlight the 105-day span
+    final epoch = DateTime(2017, 9, 23);
+    final daysPerHouse = 105;
+    final start = epoch.add(Duration(days: (n - 1) * daysPerHouse));
+    final end = start.add(Duration(days: daysPerHouse - 1));
+    // push MonthView for start.year/start.month with range
+    Navigator.of(context).push(MaterialPageRoute(builder: (_) => MonthView(
+      year: start.year,
+      month: start.month,
+      rangeStart: start,
+      rangeEnd: end,
+    )));
   }
 
   void _goDay() {
@@ -39,6 +52,14 @@ class _JumpTabState extends State<JumpTab> {
       _dayResult = n;
       _houseResult = null;
     });
+    final epoch = DateTime(2017, 9, 23);
+    final dt = epoch.add(Duration(days: n - 1));
+    // navigate to MonthView for dt.year/dt.month and highlight the day
+    Navigator.of(context).push(MaterialPageRoute(builder: (_) => MonthView(
+      year: dt.year,
+      month: dt.month,
+      highlightDay: dt.day,
+    )));
   }
 
   @override
