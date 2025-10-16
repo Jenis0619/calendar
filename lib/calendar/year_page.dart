@@ -24,7 +24,7 @@ class YearPage extends StatelessWidget {
           children: months.map((m) => GestureDetector(
             onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => MonthView(year: year, month: m))),
             child: Card(
-              child: Center(child: Text('${_monthName(m)}', style: const TextStyle(fontWeight: FontWeight.bold))),
+              child: Center(child: Text(_monthName(m), style: const TextStyle(fontWeight: FontWeight.bold))),
             ),
           )).toList(),
         ),
