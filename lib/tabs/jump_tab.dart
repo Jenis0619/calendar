@@ -27,18 +27,6 @@ class _JumpTabState extends State<JumpTab> {
       _houseResult = n;
       _dayResult = null;
     });
-    // navigate to MonthView showing the start month for this house and highlight the 105-day span
-    final epoch = DateTime(2017, 9, 23);
-    final daysPerHouse = 105;
-    final start = epoch.add(Duration(days: (n - 1) * daysPerHouse));
-    final end = start.add(Duration(days: daysPerHouse - 1));
-    // push MonthView for start.year/start.month with range
-    Navigator.of(context).push(MaterialPageRoute(builder: (_) => MonthView(
-      year: start.year,
-      month: start.month,
-      rangeStart: start,
-      rangeEnd: end,
-    )));
   }
 
   void _goDay() {
@@ -52,14 +40,6 @@ class _JumpTabState extends State<JumpTab> {
       _dayResult = n;
       _houseResult = null;
     });
-    final epoch = DateTime(2017, 9, 23);
-    final dt = epoch.add(Duration(days: n - 1));
-    // navigate to MonthView for dt.year/dt.month and highlight the day
-    Navigator.of(context).push(MaterialPageRoute(builder: (_) => MonthView(
-      year: dt.year,
-      month: dt.month,
-      highlightDay: dt.day,
-    )));
   }
 
   @override
@@ -138,14 +118,38 @@ class _JumpTabState extends State<JumpTab> {
     final daysPerHouse = 105;
     final start = epoch.add(Duration(days: (n - 1) * daysPerHouse));
     final end = start.add(Duration(days: daysPerHouse - 1));
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('House $n', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
-        const SizedBox(height: 8),
-        Text('Start: ${_fmt(start)}', style: const TextStyle(color: Colors.white70)),
-        Text('End:   ${_fmt(end)}', style: const TextStyle(color: Colors.white70)),
-      ],
+    return Card(
+      color: Colors.black,
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('House $n', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
+            const SizedBox(height: 8),
+            Text('Start: ${_fmt(start)}', style: const TextStyle(color: Colors.white70)),
+            Text('End:   ${_fmt(end)}', style: const TextStyle(color: Colors.white70)),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(builder: (_) => MonthView(year: start.year, month: start.month, rangeStart: start, rangeEnd: end)));
+                  },
+                  child: const Text('Open'),
+                ),
+                const SizedBox(width: 12),
+                ElevatedButton(
+                  onPressed: () {
+                    // copy to clipboard or other actions (placeholder)
+                  },
+                  child: const Text('Copy Range'),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -153,14 +157,33 @@ class _JumpTabState extends State<JumpTab> {
     final epoch = DateTime(2017, 9, 23);
     final dt = epoch.add(Duration(days: n - 1));
     final houseIndex = (n - 1) ~/ 105 + 1; // house number 1..48
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('Day $n', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
-        const SizedBox(height: 8),
-        Text('Date: ${_fmt(dt)}', style: const TextStyle(color: Colors.white70)),
-        Text('House: $houseIndex', style: const TextStyle(color: Colors.white70)),
-      ],
+    return Card(
+      color: Colors.black,
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Day $n', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
+            const SizedBox(height: 8),
+            Text('Date: ${_fmt(dt)}', style: const TextStyle(color: Colors.white70)),
+            Text('House: $houseIndex', style: const TextStyle(color: Colors.white70)),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(builder: (_) => MonthView(year: dt.year, month: dt.month, highlightDay: dt.day)));
+                  },
+                  child: const Text('Open'),
+                ),
+                const SizedBox(width: 12),
+                ElevatedButton(onPressed: () {}, child: const Text('Copy Date')),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
