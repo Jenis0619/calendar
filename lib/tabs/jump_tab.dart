@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../calendar/month_view.dart';
+import '../bridges/app_bridge.dart';
+import 'package:flutter/services.dart';
 
 class JumpTab extends StatefulWidget {
   const JumpTab({super.key});
@@ -134,14 +135,18 @@ class _JumpTabState extends State<JumpTab> {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(builder: (_) => MonthView(year: start.year, month: start.month, rangeStart: start, rangeEnd: end)));
+                    // switch to 14-year tab and request month open
+                    AppBridge.tabController?.animateTo(3);
+                    AppBridge.fourteen.openMonth(start.year, start.month, rangeStart: start, rangeEnd: end);
                   },
                   child: const Text('Open'),
                 ),
                 const SizedBox(width: 12),
                 ElevatedButton(
-                  onPressed: () {
-                    // copy to clipboard or other actions (placeholder)
+                  onPressed: () async {
+                    final text = '${_fmt(start)} - ${_fmt(end)}';
+                    await Clipboard.setData(ClipboardData(text: text));
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Range copied')));
                   },
                   child: const Text('Copy Range'),
                 ),
@@ -173,12 +178,13 @@ class _JumpTabState extends State<JumpTab> {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(builder: (_) => MonthView(year: dt.year, month: dt.month, highlightDay: dt.day)));
+                    AppBridge.tabController?.animateTo(3);
+                    AppBridge.fourteen.openMonth(dt.year, dt.month, highlightDay: dt.day);
                   },
                   child: const Text('Open'),
                 ),
                 const SizedBox(width: 12),
-                ElevatedButton(onPressed: () {}, child: const Text('Copy Date')),
+                ElevatedButton(onPressed: () async { await Clipboard.setData(ClipboardData(text: _fmt(dt))); ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Date copied'))); }, child: const Text('Copy Date')),
               ],
             ),
           ],

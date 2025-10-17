@@ -6,7 +6,9 @@ import 'calendar/calendar_tab.dart';
 import 'tabs/houses_tab.dart';
 import 'tabs/special_day_tab.dart';
 import 'tabs/jump_tab.dart';
+import 'tabs/shop_tab.dart';
 import 'dial/top_tab_buttons.dart';
+import 'bridges/app_bridge.dart';
 
 void main() => runApp(const FourWatchesApp());
 
@@ -48,12 +50,14 @@ class _HomePageState extends State<HomePage>
   @override
   void initState() {
     super.initState();
-  // length 7: 0=Home,1=About,2=DailyCalendar,3=14Year,4=Houses,5=SpecialDay,6=Jump
-  _ctrl = TabController(length: 7, vsync: this);
+  // length 8: 0=Home,1=About,2=DailyCalendar,3=14Year,4=Houses,5=SpecialDay,6=Jump,7=Shop
+  _ctrl = TabController(length: 8, vsync: this);
+  AppBridge.tabController = _ctrl;
   }
 
   @override
   void dispose() {
+    AppBridge.tabController = null;
     _ctrl.dispose();
     super.dispose();
   }
@@ -86,6 +90,8 @@ class _HomePageState extends State<HomePage>
                 const SpecialDayTab(),
                 // Tab 6: Jump (House or Day)
                 const JumpTab(),
+                // Tab 7: Shop
+                const ShopTab(),
               ],
             ),
           ),
