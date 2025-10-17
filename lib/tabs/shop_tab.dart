@@ -18,10 +18,12 @@ class Product {
 
 class _ShopTabState extends State<ShopTab> {
   final List<Product> _products = [
-    Product(id: 'cap', title: 'Cap', description: 'Black cap with 4 Watches logo', price: 12.99, imageUrl: ''),
-    Product(id: 'tshirt', title: 'T-Shirt', description: 'Cotton T-Shirt', price: 19.99, imageUrl: ''),
-    Product(id: 'hoodie', title: 'Hoodie', description: 'Warm hoodie', price: 34.99, imageUrl: ''),
-    Product(id: 'calendar', title: 'Wall Calendar', description: '14-Year wall calendar', price: 9.99, imageUrl: ''),
+    // use Unsplash source images with query terms to show relevant product photos
+    // Note: these are remote placeholder images suitable for mockups
+    Product(id: 'cap', title: 'Cap', description: 'Black cap with 4 Watches logo', price: 12.99, imageUrl: 'https://source.unsplash.com/400x400/?cap,hat'),
+    Product(id: 'tshirt', title: 'T-Shirt', description: 'Cotton T-Shirt', price: 19.99, imageUrl: 'https://source.unsplash.com/400x400/?tshirt,tee,shirt'),
+    Product(id: 'hoodie', title: 'Hoodie', description: 'Warm hoodie', price: 34.99, imageUrl: 'https://source.unsplash.com/400x400/?hoodie,sweatshirt'),
+    Product(id: 'calendar', title: 'Wall Calendar', description: '14-Year wall calendar', price: 9.99, imageUrl: 'https://source.unsplash.com/400x400/?calendar,wall-calendar'),
   ];
 
   final Map<String, int> _cart = {};
@@ -75,8 +77,19 @@ class _ShopTabState extends State<ShopTab> {
                     padding: const EdgeInsets.all(12.0),
                     child: Row(
                       children: [
-                        // placeholder for image
-                        Container(width: 72, height: 72, color: Colors.white10, child: const Icon(Icons.image, color: Colors.white24)),
+                        // product image (generated). fallback to icon on error.
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(6),
+                          child: SizedBox(
+                            width: 72,
+                            height: 72,
+                            child: Image.network(
+                              p.imageUrl,
+                              fit: BoxFit.cover,
+                              errorBuilder: (ctx, err, st) => Container(color: Colors.white10, child: const Icon(Icons.image, color: Colors.white24)),
+                            ),
+                          ),
+                        ),
                         const SizedBox(width: 12),
                         Expanded(
                           child: Column(
