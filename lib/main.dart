@@ -9,6 +9,7 @@ import 'tabs/jump_tab.dart';
 import 'tabs/shop_tab.dart';
 import 'dial/top_tab_buttons.dart';
 import 'bridges/app_bridge.dart';
+import 'widgets/zoomable.dart';
 
 void main() => runApp(const FourWatchesApp());
 
@@ -77,21 +78,21 @@ class _HomePageState extends State<HomePage>
               controller: _ctrl,
               children: [
                 // Tab 0: Home / Dial
-                DialWidget(onSelectTab: (i) => _ctrl.animateTo(i)),
+                Zoomable(child: DialWidget(onSelectTab: (i) => _ctrl.animateTo(i))),
                 // Tab 1: About / Video
-                VideoTab(onSelectTab: (i) => _ctrl.animateTo(i)),
+                Zoomable(child: VideoTab(onSelectTab: (i) => _ctrl.animateTo(i))),
                 // Tab 2: Daily Calendar (CalendarTab)
-                CalendarTab(onSelectTab: (i) => _ctrl.animateTo(i)),
+                Zoomable(child: CalendarTab(onSelectTab: (i) => _ctrl.animateTo(i))),
                 // Tab 3: 14-year calendar
-                const FourteenYearTab(),
+                Zoomable(child: const FourteenYearTab()),
                 // Tab 4: Houses list
-                const HousesTab(),
+                Zoomable(child: const HousesTab()),
                 // Tab 5: Special Day 666 page
-                const SpecialDayTab(),
+                Zoomable(child: const SpecialDayTab()),
                 // Tab 6: Jump (House or Day)
-                const JumpTab(),
+                Zoomable(child: const JumpTab()),
                 // Tab 7: Shop
-                const ShopTab(),
+                Zoomable(child: const ShopTab()),
               ],
             ),
           ),
